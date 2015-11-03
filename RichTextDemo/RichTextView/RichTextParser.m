@@ -7,54 +7,68 @@
 //
 
 #import "RichTextParser.h"
-#import "RichTextInfo.h"
 #import "RichTextImageInfo.h"
 
 #define kImgPlaceholder     0xFFFC
 
+#define kImagePathRegx      @"<\\s*img\\s+[^>]*?src\\s*=\\s*[\'\"](.*?)[\'\"]\\s*(alt=[\'\"](.*?)[\'\"])?[^>]*?\\/?\\s*>"
+
 @implementation RichTextParser
 
-+ (NSAttributedString *)loadTemplateJson:(NSString *)aJsonString
-                              imageArray:(NSMutableArray *)imageArray
++ (NSAttributedString *)loadRichTextString:(NSString *)aRichTextString
+                                imageArray:(NSMutableArray *)images
 {
+    NSString *richTextString = aRichTextString;
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
-    if (aJsonString) {
-        NSArray *array = [NSJSONSerialization JSONObjectWithData:[aJsonString dataUsingEncoding:NSUTF8StringEncoding]
-                                                         options:NSJSONReadingAllowFragments
-                                                           error:nil];
-        if ([array isKindOfClass:[NSArray class]]) {
-            for (NSDictionary *dict in array) {
-                RichTextBaseInfo *baseInfo = [[RichTextBaseInfo alloc] initWithDictionary:dict];
-                if (RichTextTextType == baseInfo.richTextType) {
-                    /**
-                     *  Text
-                     */
-                    RichTextInfo *richTextInfo = [[RichTextInfo alloc] initWithDictionary:dict];
-                    NSAttributedString *stringAtt = [self parseAttributedContentFromRichTextInfo:richTextInfo];
-                    [result appendAttributedString:stringAtt];
-                } else if (RichTextImageType == baseInfo.richTextType) {
-                    /**
-                     *  创建 CoreTextImageData
-                     */
-                    RichTextImageInfo *imageData = [[RichTextImageInfo alloc] init];
-                    imageData.name = dict[@"name"];
-                    imageData.position = [result length];
-                    [imageArray addObject:imageData];
-                    // 创建空白占位符，并且设置它的CTRunDelegate信息
-                    NSAttributedString *imageAtt = [self parseImageDataFromRichTextImageInfo:imageData];
-                    [result appendAttributedString:imageAtt];
-                }
-            }
+    if (richTextString && [richTextString isKindOfClass:[NSString class]]) {
+        
+        NSAttributedString *stringAtt = [self parseAttributedContentFromRichTextInfo:richTextString];
+        [result appendAttributedString:stringAtt];
+        
+        [images addObjectsFromArray:[RichTextParser parseRichTextString:richTextString]];
+        
+        //替换所有的图片
+        for (RichTextImageInfo *imageInfo in images) {
+            NSAttributedString *imageAtt = [self parseImageDataFromRichTextImageInfo:imageInfo];
+            NSRange imageRange = [result.string rangeOfString:imageInfo.imageName];
+            NSLog(@"%@ \r range = %@", imageInfo.imageName, NSStringFromRange(imageRange));
+            [result replaceCharactersInRange:imageRange withAttributedString:imageAtt];
         }
     }
     
     return result;
 }
 
-#pragma mark - 转换 文本
-+ (NSAttributedString *)parseAttributedContentFromRichTextInfo:(RichTextInfo *)aRichTextInfo
+#pragma mark - 提取所有图片
++ (NSArray *)parseRichTextString:(NSString *)aRichTextString
 {
-    return [[NSAttributedString alloc] initWithString:aRichTextInfo.text attributes:@{}];
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:kImagePathRegx
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    NSArray *results = [regex matchesInString:aRichTextString
+                                      options:0
+                                        range:NSMakeRange(0, [aRichTextString length])];
+    
+    for (NSTextCheckingResult *result in results) {
+        if (result) {
+            NSString *imageName = [aRichTextString substringWithRange:[result rangeAtIndex:0]];
+            if (!imageName || [imageName isKindOfClass:[NSNull class]]) continue;
+            
+            NSLog(@"ImageName = %@", imageName);
+            RichTextImageInfo *richTextImageInfo = [[RichTextImageInfo alloc] initWithImgTagString:imageName];
+            
+            [images addObject:richTextImageInfo];
+        }
+    }
+    
+    return images;
+}
+
+#pragma mark - 转换 文本
++ (NSAttributedString *)parseAttributedContentFromRichTextInfo:(NSString *)aRichTextString
+{
+    return [[NSAttributedString alloc] initWithString:aRichTextString attributes:@{}];
 }
 
 #pragma mark - 转换 图片
@@ -62,7 +76,7 @@
 {
     //setImage
     NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];
-    textAttachment.image = [UIImage imageNamed:richTextImageInfo.name];
+    textAttachment.image = [UIImage imageNamed:richTextImageInfo.imagePath];
     
     //计算 图片大小
     CGFloat imageWidth = textAttachment.image.size.width;
@@ -90,12 +104,28 @@
 
 #pragma mark - 转换成string
 + (NSString *)parseAttributedString:(NSAttributedString *)attributedString
+                         imageArray:(NSArray *)images
 {
-    NSMutableString *string = [[NSMutableString alloc] initWithString:attributedString.string];
-    unichar objectReplacementChar = kImgPlaceholder;
-    [string replaceCharactersInRange:[string rangeOfString:[NSString stringWithCharacters:&objectReplacementChar length:1]]
-                          withString:@"<img>"];
-    return string;
+    NSString *attString = attributedString.string;
+    if (!attString || [attString isKindOfClass:[NSNull class]]) {
+        return @"";
+    }
+    
+    NSMutableString *parseString = [[NSMutableString alloc] initWithString:attString];
+    
+    [images enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        RichTextImageInfo *richTextImageInfo = (RichTextImageInfo *)obj;
+        NSString *imageString = [NSString stringWithFormat:@"<img src = \"%@\">", richTextImageInfo.imagePath];
+        
+        unichar objectReplacementChar = kImgPlaceholder;
+        NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar
+                                                           length:1];
+        
+        [parseString replaceCharactersInRange:[parseString rangeOfString:replaceString]
+                                   withString:imageString];
+    }];
+    
+    return parseString;
 }
 
 @end

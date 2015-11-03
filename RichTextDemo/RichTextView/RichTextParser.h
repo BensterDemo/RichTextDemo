@@ -10,9 +10,9 @@
 
 @interface RichTextParser : NSObject
 
-+ (NSAttributedString *)loadTemplateJson:(NSString *)aJsonString
-                              imageArray:(NSMutableArray *)imageArray;
++ (NSAttributedString *)loadRichTextString:(NSString *)aRichTextString
+                                imageArray:(NSMutableArray *)images;
 
-+ (NSString *)parseAttributedString:(NSAttributedString *)attributedString;
-
++ (NSString *)parseAttributedString:(NSAttributedString *)attributedString
+                         imageArray:(NSArray *)images;
 @end

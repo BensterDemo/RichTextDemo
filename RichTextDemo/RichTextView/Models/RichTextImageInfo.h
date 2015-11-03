@@ -10,8 +10,14 @@
 
 @interface RichTextImageInfo : RichTextBaseInfo
 
-@property (strong, nonatomic) NSString * name;
+@property (nonatomic, assign) long long imageId;
 
-@property (nonatomic, assign) NSInteger position;
+@property (nonatomic, strong) NSString *imageName;
+
+@property (nonatomic, strong) NSString *imagePath;
+
+
+#pragma mark - Methods
+- (instancetype)initWithImgTagString:(NSString *)aImgTagString;
 
 @end
