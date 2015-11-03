@@ -20,7 +20,6 @@
 		C1C35CA81BA95202000A4A06 /* RichTextInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35C9E1BA95202000A4A06 /* RichTextInfo.m */; };
 		C1C35CA91BA95202000A4A06 /* RichTextLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35CA01BA95202000A4A06 /* RichTextLinkInfo.m */; };
 		C1C35CAA1BA95202000A4A06 /* RichTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35CA21BA95202000A4A06 /* RichTextUtils.m */; };
-		C1C35CAC1BA95245000A4A06 /* content.json in Resources */ = {isa = PBXBuildFile; fileRef = C1C35CAB1BA95245000A4A06 /* content.json */; };
 		C1C35CBB1BA969A1000A4A06 /* coretext-image-1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1C35CB91BA969A1000A4A06 /* coretext-image-1.png */; };
 		C1C35CBC1BA969A1000A4A06 /* coretext-image-2.png in Resources */ = {isa = PBXBuildFile; fileRef = C1C35CBA1BA969A1000A4A06 /* coretext-image-2.png */; };
 		C1C35CBF1BA96DC1000A4A06 /* RichTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35CBE1BA96DC1000A4A06 /* RichTextParser.m */; };
@@ -62,7 +61,6 @@
 		C1C35CA01BA95202000A4A06 /* RichTextLinkInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RichTextLinkInfo.m; sourceTree = "<group>"; };
 		C1C35CA11BA95202000A4A06 /* RichTextUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RichTextUtils.h; sourceTree = "<group>"; };
 		C1C35CA21BA95202000A4A06 /* RichTextUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RichTextUtils.m; sourceTree = "<group>"; };
-		C1C35CAB1BA95245000A4A06 /* content.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = content.json; sourceTree = "<group>"; };
 		C1C35CB91BA969A1000A4A06 /* coretext-image-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coretext-image-1.png"; sourceTree = "<group>"; };
 		C1C35CBA1BA969A1000A4A06 /* coretext-image-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coretext-image-2.png"; sourceTree = "<group>"; };
 		C1C35CBD1BA96DC1000A4A06 /* RichTextParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RichTextParser.h; sourceTree = "<group>"; };
@@ -126,7 +124,6 @@
 			children = (
 				C1C35CB91BA969A1000A4A06 /* coretext-image-1.png */,
 				C1C35CBA1BA969A1000A4A06 /* coretext-image-2.png */,
-				C1C35CAB1BA95245000A4A06 /* content.json */,
 				C1C35C3C1BA915F5000A4A06 /* Info.plist */,
 				C1C35C3D1BA915F5000A4A06 /* main.m */,
 			);
@@ -264,7 +261,6 @@
 				C1C35CBC1BA969A1000A4A06 /* coretext-image-2.png in Resources */,
 				C1C35C491BA915F5000A4A06 /* Images.xcassets in Resources */,
 				C1C35CBB1BA969A1000A4A06 /* coretext-image-1.png in Resources */,
-				C1C35CAC1BA95245000A4A06 /* content.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +484,7 @@
 				C1C35C5D1BA915F5000A4A06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C1C35C5E1BA915F5000A4A06 /* Build configuration list for PBXNativeTarget "RichTextDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +493,7 @@
 				C1C35C601BA915F5000A4A06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

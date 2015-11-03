@@ -10,18 +10,9 @@
 
 @implementation RichTextUtils
 
-// 检测点击位置是否在链接上
-//+ (RichTextLinkInfo *)touchLinkInView:(UIView *)view atPoint:(CGPoint)point data:(RichTextData *)data {
-//    CFIndex idx = [self touchContentOffsetInView:view atPoint:point data:data];
-//    if (idx == -1) {
-//        return nil;
-//    }
-//    RichTextLinkInfo * foundLink = [self linkAtIndex:idx linkArray:data.linkArray];
-//    return foundLink;
-//}
-
-// 将点击的位置转换成字符串的偏移量，如果没有找到，则返回-1
-+ (CFIndex)touchContentOffsetInView:(UIView *)view atPoint:(CGPoint)point data:(RichTextData *)data {
+#pragma make - 将点击的位置转换成字符串的偏移量，如果没有找到，则返回-1
++ (CFIndex)touchContentOffsetInView:(UIView *)view atPoint:(CGPoint)point data:(RichTextData *)data
+{
     CTFrameRef textFrame = data.ctFrame;
     CFArrayRef lines = CTFrameGetLines(textFrame);
     if (!lines) {
@@ -53,19 +44,23 @@
             idx = CTLineGetStringIndexForPosition(line, relativePoint);
         }
     }
+    
     return idx;
 }
 
-+ (CGRect)getLineBounds:(CTLineRef)line point:(CGPoint)point {
++ (CGRect)getLineBounds:(CTLineRef)line point:(CGPoint)point
+{
     CGFloat ascent = 0.0f;
     CGFloat descent = 0.0f;
     CGFloat leading = 0.0f;
     CGFloat width = (CGFloat)CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
     CGFloat height = ascent + descent;
+    
     return CGRectMake(point.x, point.y - descent, width, height);
 }
 
-+ (RichTextLinkInfo *)linkAtIndex:(CFIndex)i linkArray:(NSArray *)linkArray {
++ (RichTextLinkInfo *)linkAtIndex:(CFIndex)i linkArray:(NSArray *)linkArray
+{
     RichTextLinkInfo *link = nil;
     for (RichTextLinkInfo *data in linkArray) {
         if (NSLocationInRange(i, data.range)) {
@@ -73,6 +68,7 @@
             break;
         }
     }
+    
     return link;
 }
 

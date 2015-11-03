@@ -100,4 +100,11 @@
     return imageAttribut;
 }
 
+#pragma mark - 转换成string
+- (NSString *)parseAttributedString:(NSAttributedString *)attributedString
+{
+    
+    return nil;
+}
+
 @end
