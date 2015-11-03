@@ -8,8 +8,9 @@
 
 #import "RichTextParser.h"
 #import "RichTextInfo.h"
-#import "RichTextLinkInfo.h"
 #import "RichTextImageInfo.h"
+
+#define kImgPlaceholder     0xFFFC
 
 @implementation RichTextParser
 
@@ -29,8 +30,8 @@
                      *  Text
                      */
                     RichTextInfo *richTextInfo = [[RichTextInfo alloc] initWithDictionary:dict];
-                    NSAttributedString *as = [self parseAttributedContentFromRichTextInfo:richTextInfo];
-                    [result appendAttributedString:as];
+                    NSAttributedString *stringAtt = [self parseAttributedContentFromRichTextInfo:richTextInfo];
+                    [result appendAttributedString:stringAtt];
                 } else if (RichTextImageType == baseInfo.richTextType) {
                     /**
                      *  创建 CoreTextImageData
@@ -40,8 +41,8 @@
                     imageData.position = [result length];
                     [imageArray addObject:imageData];
                     // 创建空白占位符，并且设置它的CTRunDelegate信息
-                    NSAttributedString *as = [self parseImageDataFromRichTextImageInfo:imageData];
-                    [result appendAttributedString:as];
+                    NSAttributedString *imageAtt = [self parseImageDataFromRichTextImageInfo:imageData];
+                    [result appendAttributedString:imageAtt];
                 }
             }
         }
@@ -53,20 +54,7 @@
 #pragma mark - 转换 文本
 + (NSAttributedString *)parseAttributedContentFromRichTextInfo:(RichTextInfo *)aRichTextInfo
 {
-    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
-    // set color
-    if (aRichTextInfo.color) {
-        [attributes setObject:aRichTextInfo.color forKey:NSForegroundColorAttributeName];
-    }
-    
-    // set font size
-    if (aRichTextInfo.size > 0) {
-        [attributes setObject:[UIFont systemFontOfSize:aRichTextInfo.size] forKey:NSFontAttributeName];
-    } else {
-        [attributes setObject:[UIFont systemFontOfSize:16] forKey:NSFontAttributeName];
-    }
-    
-    return [[NSAttributedString alloc] initWithString:aRichTextInfo.text attributes:attributes];
+    return [[NSAttributedString alloc] initWithString:aRichTextInfo.text attributes:@{}];
 }
 
 #pragma mark - 转换 图片
@@ -93,7 +81,7 @@
     NSMutableAttributedString *imageAttribut = [[NSMutableAttributedString alloc] initWithAttributedString:[NSAttributedString attributedStringWithAttachment:textAttachment]];
     
     // 使用0xFFFC作为空白的占位符
-    unichar objectReplacementChar = 0xFFFC;
+    unichar objectReplacementChar = kImgPlaceholder;
     NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar length:1];
     [imageAttribut replaceCharactersInRange:NSMakeRange(0,1) withString:replaceString];
     
@@ -101,10 +89,13 @@
 }
 
 #pragma mark - 转换成string
-- (NSString *)parseAttributedString:(NSAttributedString *)attributedString
++ (NSString *)parseAttributedString:(NSAttributedString *)attributedString
 {
-    
-    return nil;
+    NSMutableString *string = [[NSMutableString alloc] initWithString:attributedString.string];
+    unichar objectReplacementChar = kImgPlaceholder;
+    [string replaceCharactersInRange:[string rangeOfString:[NSString stringWithCharacters:&objectReplacementChar length:1]]
+                          withString:@"<img>"];
+    return string;
 }
 
 @end

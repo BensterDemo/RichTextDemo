@@ -18,8 +18,6 @@
 		C1C35CA61BA95202000A4A06 /* RichTextData.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35C9A1BA95202000A4A06 /* RichTextData.m */; };
 		C1C35CA71BA95202000A4A06 /* RichTextImageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35C9C1BA95202000A4A06 /* RichTextImageInfo.m */; };
 		C1C35CA81BA95202000A4A06 /* RichTextInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35C9E1BA95202000A4A06 /* RichTextInfo.m */; };
-		C1C35CA91BA95202000A4A06 /* RichTextLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35CA01BA95202000A4A06 /* RichTextLinkInfo.m */; };
-		C1C35CAA1BA95202000A4A06 /* RichTextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35CA21BA95202000A4A06 /* RichTextUtils.m */; };
 		C1C35CBB1BA969A1000A4A06 /* coretext-image-1.png in Resources */ = {isa = PBXBuildFile; fileRef = C1C35CB91BA969A1000A4A06 /* coretext-image-1.png */; };
 		C1C35CBC1BA969A1000A4A06 /* coretext-image-2.png in Resources */ = {isa = PBXBuildFile; fileRef = C1C35CBA1BA969A1000A4A06 /* coretext-image-2.png */; };
 		C1C35CBF1BA96DC1000A4A06 /* RichTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35CBE1BA96DC1000A4A06 /* RichTextParser.m */; };
@@ -57,10 +55,6 @@
 		C1C35C9C1BA95202000A4A06 /* RichTextImageInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RichTextImageInfo.m; sourceTree = "<group>"; };
 		C1C35C9D1BA95202000A4A06 /* RichTextInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RichTextInfo.h; sourceTree = "<group>"; };
 		C1C35C9E1BA95202000A4A06 /* RichTextInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RichTextInfo.m; sourceTree = "<group>"; };
-		C1C35C9F1BA95202000A4A06 /* RichTextLinkInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RichTextLinkInfo.h; sourceTree = "<group>"; };
-		C1C35CA01BA95202000A4A06 /* RichTextLinkInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RichTextLinkInfo.m; sourceTree = "<group>"; };
-		C1C35CA11BA95202000A4A06 /* RichTextUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RichTextUtils.h; sourceTree = "<group>"; };
-		C1C35CA21BA95202000A4A06 /* RichTextUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RichTextUtils.m; sourceTree = "<group>"; };
 		C1C35CB91BA969A1000A4A06 /* coretext-image-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coretext-image-1.png"; sourceTree = "<group>"; };
 		C1C35CBA1BA969A1000A4A06 /* coretext-image-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "coretext-image-2.png"; sourceTree = "<group>"; };
 		C1C35CBD1BA96DC1000A4A06 /* RichTextParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RichTextParser.h; sourceTree = "<group>"; };
@@ -153,8 +147,6 @@
 				C1C35C961BA95202000A4A06 /* Models */,
 				C1C35CBD1BA96DC1000A4A06 /* RichTextParser.h */,
 				C1C35CBE1BA96DC1000A4A06 /* RichTextParser.m */,
-				C1C35CA11BA95202000A4A06 /* RichTextUtils.h */,
-				C1C35CA21BA95202000A4A06 /* RichTextUtils.m */,
 			);
 			path = RichTextView;
 			sourceTree = "<group>";
@@ -168,8 +160,6 @@
 				C1C35C981BA95202000A4A06 /* RichTextBaseInfo.m */,
 				C1C35C9D1BA95202000A4A06 /* RichTextInfo.h */,
 				C1C35C9E1BA95202000A4A06 /* RichTextInfo.m */,
-				C1C35C9F1BA95202000A4A06 /* RichTextLinkInfo.h */,
-				C1C35CA01BA95202000A4A06 /* RichTextLinkInfo.m */,
 				C1C35C9B1BA95202000A4A06 /* RichTextImageInfo.h */,
 				C1C35C9C1BA95202000A4A06 /* RichTextImageInfo.m */,
 			);
@@ -279,10 +269,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1C35CBF1BA96DC1000A4A06 /* RichTextParser.m in Sources */,
-				C1C35CA91BA95202000A4A06 /* RichTextLinkInfo.m in Sources */,
 				C1C35CA71BA95202000A4A06 /* RichTextImageInfo.m in Sources */,
 				C1C35C441BA915F5000A4A06 /* ViewController.m in Sources */,
-				C1C35CAA1BA95202000A4A06 /* RichTextUtils.m in Sources */,
 				C1C35CA61BA95202000A4A06 /* RichTextData.m in Sources */,
 				C1C35C411BA915F5000A4A06 /* AppDelegate.m in Sources */,
 				C1C35C3E1BA915F5000A4A06 /* main.m in Sources */,

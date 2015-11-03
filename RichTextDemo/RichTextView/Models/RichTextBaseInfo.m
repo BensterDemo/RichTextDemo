@@ -28,8 +28,6 @@
         
         if ([@"txt" isEqualToString:type]) {
             richtextType = RichTextTextType;
-        } else if ([@"link" isEqualToString:type]) {
-            richtextType = RichTextLinkTextType;
         } else if ([@"img" isEqualToString:type]) {
             richtextType = RichTextImageType;
         }

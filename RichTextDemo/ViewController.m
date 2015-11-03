@@ -32,7 +32,7 @@
 #pragma mark - 保存
 - (IBAction)richTextSave:(UIButton *)sender
 {
-    NSLog(@"%@", _textView.attributedText);
+    NSLog(@"%@", [RichTextParser parseAttributedString:_textView.attributedText]);
 }
 
 #pragma mark - 选择图片

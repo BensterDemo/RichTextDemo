@@ -13,4 +13,6 @@
 + (NSAttributedString *)loadTemplateJson:(NSString *)aJsonString
                               imageArray:(NSMutableArray *)imageArray;
 
++ (NSString *)parseAttributedString:(NSAttributedString *)attributedString;
+
 @end

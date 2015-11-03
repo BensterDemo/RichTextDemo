@@ -11,7 +11,6 @@
 typedef enum : NSUInteger {
     RichTextTextType     = 0,           //文本
     RichTextImageType    = 1,           //图片
-    RichTextLinkTextType = 2            //链接
     
 } RichTextType;
 

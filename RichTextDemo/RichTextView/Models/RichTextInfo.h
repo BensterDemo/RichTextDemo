@@ -10,10 +10,6 @@
 
 @interface RichTextInfo : RichTextBaseInfo
 
-@property (nonatomic, assign) CGFloat size;         //字体大小
-
-@property (nonatomic, strong) UIColor *color;       //字体颜色
-
 @property (nonatomic, strong) NSString *text;       //文本
 
 @end
