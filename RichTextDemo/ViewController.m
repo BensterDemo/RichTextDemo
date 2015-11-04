@@ -70,11 +70,13 @@
         
         [needUploadImages addObject:image];
     }];
-    
-    [self uploadImages:needUploadImages];
+
+    if (needUploadImages.count > 0) {
+        [self uploadImages:needUploadImages];
+    }
 }
 
-#pragma mark - NetWork
+#pragma mark - NetWork Upload
 - (void)uploadImages:(NSArray *)images
 {
     UploadImageModel *uploadImageModel = [[UploadImageModel alloc] init];

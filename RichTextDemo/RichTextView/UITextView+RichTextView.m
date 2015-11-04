@@ -56,20 +56,7 @@
             RichTextAttachment *imageAtt = [[RichTextAttachment alloc] init];
             imageAtt.imageName = imageName;
             imageAtt.imagePath = imagePath;
-            imageAtt.image = [UIImage imageNamed:imageAtt.imagePath];
-            
-            //计算 图片大小
-            CGFloat imageWidth = imageAtt.image.size.width;
-            CGFloat imageHeight = imageAtt.image.size.height;
-            
-            CGFloat imageMaxWidth = CGRectGetWidth([UIScreen mainScreen].bounds) - 10;
-            
-            if (imageWidth > imageMaxWidth) {
-                imageWidth = imageMaxWidth;
-                imageHeight = imageMaxWidth*imageAtt.image.size.height / imageAtt.image.size.width;
-            }
-            
-            imageAtt.bounds = CGRectMake(0, 0, imageWidth, imageHeight);
+            imageAtt.showImage = [UIImage imageNamed:imageAtt.imagePath];
             
             [images addObject:imageAtt];
         }
@@ -78,7 +65,7 @@
     return images;
 }
 
-#pragma mark - Attributes Getter
+#pragma mark - Attributes Getter And Setter
 
 #pragma mark - Getter 所有的图片（RichTextAttachment）
 - (NSArray *)richTextAttachments
@@ -146,6 +133,7 @@
     return parseString;
 }
 
+#pragma mark - Setter 设置带图片的文本
 - (void)setAttributedString:(NSString *)attributedString
 {
     NSString *richTextString = attributedString;
@@ -180,21 +168,7 @@
     long randNum = (nowTime * 100)  + rand;
     
     imageAtt.imageId = [NSString stringWithFormat:@"%li", randNum];
-    
-    imageAtt.image = image;
-    
-    //计算 图片大小
-    CGFloat imageWidth = imageAtt.image.size.width;
-    CGFloat imageHeight = imageAtt.image.size.height;
-    
-    CGFloat imageMaxWidth = CGRectGetWidth([UIScreen mainScreen].bounds) - 10;
-    
-    if (imageWidth > imageMaxWidth) {
-        imageWidth = imageMaxWidth;
-        imageHeight = imageMaxWidth*imageAtt.image.size.height / imageAtt.image.size.width;
-    }
-    
-    imageAtt.bounds = CGRectMake(0, 0, imageWidth, imageHeight);
+    imageAtt.showImage = image;
     
     NSAttributedString *imageAttributedString = [NSAttributedString attributedStringWithAttachment:imageAtt];
     
