@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -18,8 +19,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EyJ-2U-DDt">
-                                <rect key="frame" x="0.0" y="115" width="600" height="485"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EyJ-2U-DDt">
+                                <rect key="frame" x="4" y="115" width="592" height="485"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="238" id="srD-6N-73z"/>
@@ -32,17 +33,18 @@
                                     </mask>
                                 </variation>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CbB-nG-Hsq">
-                                <rect key="frame" x="320" y="20" width="280" height="85"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CbB-nG-Hsq">
+                                <rect key="frame" x="430" y="20" width="170" height="85"/>
                                 <color key="backgroundColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" secondItem="CbB-nG-Hsq" secondAttribute="height" multiplier="2" id="47D-v7-JmO"/>
                                     <constraint firstAttribute="width" constant="280" id="FGB-Od-xFz"/>
                                     <constraint firstAttribute="height" constant="85" id="eLq-WQ-G8y"/>
                                     <constraint firstAttribute="width" constant="30" id="f89-6j-EFf"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="保存">
+                                <state key="normal" title="上传">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="default">
@@ -55,11 +57,12 @@
                                     <action selector="richTextSave:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Cn4-1x-z9D"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nlD-2y-gHr">
-                                <rect key="frame" x="0.0" y="20" width="280" height="85"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nlD-2y-gHr">
+                                <rect key="frame" x="0.0" y="20" width="170" height="85"/>
                                 <color key="backgroundColor" red="0.29803922772407532" green="0.29803922772407532" blue="0.29803922772407532" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="280" id="96x-Pb-vtu"/>
+                                    <constraint firstAttribute="width" secondItem="nlD-2y-gHr" secondAttribute="height" multiplier="2" id="fSf-az-YQw"/>
                                     <constraint firstAttribute="height" constant="85" id="vXf-aY-fhd"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
@@ -85,6 +88,8 @@
                             <constraint firstItem="nlD-2y-gHr" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="-20" id="Nrt-Zv-9ZA"/>
                             <constraint firstItem="EyJ-2U-DDt" firstAttribute="top" secondItem="nlD-2y-gHr" secondAttribute="bottom" constant="10" id="Pf8-7N-bdh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="CbB-nG-Hsq" secondAttribute="trailing" constant="-20" id="Twy-SP-wvl"/>
+                            <constraint firstItem="CbB-nG-Hsq" firstAttribute="leading" secondItem="nlD-2y-gHr" secondAttribute="trailing" constant="40" id="Vxz-ex-JmQ"/>
+                            <constraint firstItem="CbB-nG-Hsq" firstAttribute="leading" secondItem="nlD-2y-gHr" secondAttribute="trailing" constant="40" id="jCJ-hU-rxp"/>
                             <constraint firstItem="nlD-2y-gHr" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="jKv-Mu-d71"/>
                             <constraint firstAttribute="trailingMargin" secondItem="CbB-nG-Hsq" secondAttribute="trailing" constant="-4" id="jaX-Hg-kYr"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nlD-2y-gHr" secondAttribute="trailing" constant="-16" id="lN0-iL-qDu"/>
@@ -94,6 +99,8 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="lN0-iL-qDu"/>
+                                <exclude reference="Vxz-ex-JmQ"/>
+                                <exclude reference="jCJ-hU-rxp"/>
                                 <exclude reference="jaX-Hg-kYr"/>
                                 <exclude reference="yrH-8m-uIs"/>
                             </mask>
