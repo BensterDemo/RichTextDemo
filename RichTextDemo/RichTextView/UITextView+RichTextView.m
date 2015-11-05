@@ -8,8 +8,10 @@
 
 #import "UITextView+RichTextView.h"
 #import "RichTextUtility.h"
+#import <ReactiveCocoa/ReactiveCocoa.h>
 
 #define kImagePathRegx      @"<\\s*img\\s+[^>]*?src\\s*=\\s*[\'\"](.*?)[\'\"]\\s*(alt=[\'\"](.*?)[\'\"])?[^>]*?\\/?\\s*>"
+#define kImageNameRegx      @"[^/\\\\]+(\\.*?)$"
 
 @implementation UITextView (RichTextView)
 
@@ -38,31 +40,110 @@
 - (NSArray *)parseImageRichString:(NSString *)aRichTextString
 {
     NSMutableArray *images = [[NSMutableArray alloc] init];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:kImagePathRegx
-                                                                           options:NSRegularExpressionCaseInsensitive
-                                                                             error:nil];
-    NSArray *results = [regex matchesInString:aRichTextString
-                                      options:0
-                                        range:NSMakeRange(0, [aRichTextString length])];
+    NSArray *matchs = [RichTextUtility regexArrayWtithMatchString:aRichTextString
+                                                      regexString:kImagePathRegx];
+    [matchs enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSMutableArray *matchResult = [[NSMutableArray alloc] initWithArray:obj];
+        RichTextAttachment *imageAtt = [[RichTextAttachment alloc] init];
+
+        for (int i = 0; i < [matchResult count]; i ++) {
+            NSString *result = [matchResult objectAtIndex:i];
+            if ([RichTextUtility isNullValue:result]) continue;
+            
+            switch (i) {
+                case 0:
+                    NSLog(@"case 0 = %@", result);
+                    imageAtt.imageFullName = result;
+                    break;
+                case 1: {
+                    NSLog(@"case 1 = %@", result);
+
+                    imageAtt.imagePath = result;
+                    NSString *imageName = [RichTextUtility regexStringWtithMatchString:imageAtt.imagePath
+                                                                         regexString:kImageNameRegx];
+                    NSLog(@"case 1:imageName = %@", imageName);
+                    if (![RichTextUtility isNullValue:imageName]) {
+                        imageAtt.imageName = imageName;
+                    }
+                }
+                    break;
+                default:
+                    NSLog(@"Default Result = %@", result);
+                    break;
+            }
+        };
+        
+        imageAtt.showImage = [UIImage imageNamed:imageAtt.imagePath];
+        if (!imageAtt.image) {
+            __weak typeof(self) weakSelf = self;
+            [[RACScheduler mainThreadScheduler] afterDelay:2 schedule:^{
+                __strong typeof(self) strongSelf = weakSelf;
+                imageAtt.image = [UIImage imageNamed:@"empty"];
+                
+                NSMutableAttributedString *parseAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:strongSelf.attributedText];
+                [parseAttributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+                strongSelf.attributedText = parseAttributedString;
+            }];
+        }
+        
+        [images addObject:imageAtt];
+    }];
     
-    for (NSTextCheckingResult *result in results) {
-        if (result) {
-            NSString *imageName = [aRichTextString substringWithRange:[result rangeAtIndex:0]];
-            NSString *imagePath = [aRichTextString substringWithRange:[result rangeAtIndex:1]];
-            if (!imageName || [imageName isKindOfClass:[NSNull class]]) continue;
-            if (!imagePath || [imagePath isKindOfClass:[NSNull class]]) continue;
+    return images;
+}
+
+#pragma mark - 把带有图片信息的NSAttributedString转换成String
+- (NSString *)parseAttributedStringToString:(NSAttributedString *)attributedString
+{
+    NSMutableAttributedString *parseAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:attributedString];
+    
+    [parseAttributedString enumerateAttribute:NSAttachmentAttributeName
+                                      inRange:NSMakeRange(0, parseAttributedString.length)
+                                      options:0
+                                   usingBlock:^(id value, NSRange range, BOOL *stop) {
+                                       if (value && [value isKindOfClass:[RichTextAttachment class]]) {
+                                           RichTextAttachment *richTextAtt = (RichTextAttachment *)value;
+                                           NSString *imageFullName = [NSString stringWithFormat:@"%@", richTextAtt.imageFullName];
+                                           
+                                           NSAttributedString *imageAttributedString = [self parseAttributedContentFromRichTextString:imageFullName];
+                                           
+                                           [parseAttributedString replaceCharactersInRange:range
+                                                                      withAttributedString:imageAttributedString];
+                                       }
+                                   }];
+    
+    NSString *attString = parseAttributedString.string;
+    if (!attString || [attString isKindOfClass:[NSNull class]]) {
+        return @"";
+    }
+    
+    NSMutableString *parseString = [[NSMutableString alloc] initWithString:attString];
+    
+    return parseString;
+}
+
+#pragma mark - 把String转换成带有图片信息的NSAttributedString
+- (NSAttributedString *)parseStringToAttributedString:(NSString *)aRichString
+{
+    NSString *richTextString = aRichString;
+    NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
+    if (richTextString && [richTextString isKindOfClass:[NSString class]]) {
+        //文本
+        NSAttributedString *stringAtt = [self parseAttributedContentFromRichTextString:richTextString];
+        [result appendAttributedString:stringAtt];
+        
+        NSArray *images = [NSArray arrayWithArray:[self parseImageRichString:richTextString]];
+        
+        //替换所有的图片
+        for (RichTextAttachment *imageAtt in images) {
+            NSAttributedString *imageAttributedString = [self parseImageDataFromRichTextImageInfo:imageAtt];
+            NSRange imageRange = [result.string rangeOfString:imageAtt.imageFullName];
             
-            NSLog(@"ImageName = %@\rImagePath = %@", imageName, imagePath);
-            RichTextAttachment *imageAtt = [[RichTextAttachment alloc] init];
-            imageAtt.imageName = imageName;
-            imageAtt.imagePath = imagePath;
-            imageAtt.showImage = [UIImage imageNamed:imageAtt.imagePath];
-            
-            [images addObject:imageAtt];
+            [result replaceCharactersInRange:imageRange withAttributedString:imageAttributedString];
         }
     }
     
-    return images;
+    return result;
 }
 
 #pragma mark - Attributes Getter And Setter
@@ -102,59 +183,13 @@
 #pragma mark - Getter attributesString
 - (NSString *)attributedString
 {
-    NSMutableAttributedString *parseAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.attributedText];
-    
-    [parseAttributedString enumerateAttribute:NSAttachmentAttributeName
-                                      inRange:NSMakeRange(0, parseAttributedString.length)
-                                      options:0
-                                   usingBlock:^(id value, NSRange range, BOOL *stop) {
-                                       if (value && [value isKindOfClass:[RichTextAttachment class]]) {
-                                           RichTextAttachment *richTextAtt = (RichTextAttachment *)value;
-                                           NSString *imageName = richTextAtt.imageName;
-                                           
-                                           if ([RichTextUtility isNullValue:imageName]) {
-                                               imageName = [NSString stringWithFormat:@"%@", imageName];
-                                           }
-                                           
-                                           NSAttributedString *imageAttributedString = [self parseAttributedContentFromRichTextString:imageName];
-                                           
-                                           [parseAttributedString replaceCharactersInRange:range
-                                                                      withAttributedString:imageAttributedString];
-                                       }
-                                   }];
-    
-    NSString *attString = parseAttributedString.string;
-    if (!attString || [attString isKindOfClass:[NSNull class]]) {
-        return @"";
-    }
-    
-    NSMutableString *parseString = [[NSMutableString alloc] initWithString:attString];
-    
-    return parseString;
+    return [self parseAttributedStringToString:self.attributedText];
 }
 
-#pragma mark - Setter 设置带图片的文本
+#pragma mark - Setter attributesString
 - (void)setAttributedString:(NSString *)attributedString
 {
-    NSString *richTextString = attributedString;
-    NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
-    if (richTextString && [richTextString isKindOfClass:[NSString class]]) {
-        
-        NSAttributedString *stringAtt = [self parseAttributedContentFromRichTextString:richTextString];
-        [result appendAttributedString:stringAtt];
-        
-        NSArray *images = [NSArray arrayWithArray:[self parseImageRichString:richTextString]];
-        
-        //替换所有的图片
-        for (RichTextAttachment *imageAtt in images) {
-            NSAttributedString *imageAttString = [self parseImageDataFromRichTextImageInfo:imageAtt];
-            NSRange imageRange = [result.string rangeOfString:imageAtt.imageName];
-            //            NSLog(@"%@ \r range = %@", imageAtt.imageName, NSStringFromRange(imageRange));
-            [result replaceCharactersInRange:imageRange withAttributedString:imageAttString];
-        }
-    }
-    
-    self.attributedText = result;
+    self.attributedText = [self parseStringToAttributedString:attributedString];
 }
 
 #pragma mark -
@@ -167,7 +202,7 @@
     int rand = ((arc4random() % 100) + 1);
     long randNum = (nowTime * 100)  + rand;
     
-    imageAtt.imageId = [NSString stringWithFormat:@"%li", randNum];
+    imageAtt.imageName = [NSString stringWithFormat:@"%li", randNum];
     imageAtt.showImage = image;
     
     NSAttributedString *imageAttributedString = [NSAttributedString attributedStringWithAttachment:imageAtt];

@@ -30,4 +30,56 @@
     return NO;
 }
 
+#pragma mark - 正则出所有结果
++ (NSArray *)regexArrayWtithMatchString:(NSString *)matchString
+                            regexString:(NSString *)regexString
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regexString
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    NSArray *results = [regex matchesInString:matchString
+                                      options:0
+                                        range:NSMakeRange(0, [matchString length])];
+    
+    NSMutableArray *matchs = [[NSMutableArray alloc] init];
+    
+    //遍历出匹配结果
+    for (NSTextCheckingResult *result in results) {
+        NSMutableArray *matchResult = [[NSMutableArray alloc] init];
+        
+        for (int i = 0; i < result.numberOfRanges; i ++) {
+            NSRange matchRange = [result rangeAtIndex:i];
+            if (matchRange.location == NSNotFound) continue;    //是否越界
+            
+            NSString *match = [matchString substringWithRange:matchRange];
+            if ([RichTextUtility isNullValue:match]) continue;  //是否为空
+            
+            [matchResult addObject:match];
+        }
+        
+        [matchs addObject:matchResult];
+    }
+    
+    return matchs;
+}
+
+#pragma mark - 正则出单个结果
++ (NSString *)regexStringWtithMatchString:(NSString *)matchString
+                              regexString:(NSString *)regexString
+{
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regexString
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:nil];
+    NSTextCheckingResult *result = [regex firstMatchInString:matchString
+                                                     options:0
+                                                       range:NSMakeRange(0, [matchString length])];
+    
+    if (result) {
+        return [matchString substringWithRange:[result range]];
+    }
+    
+    return nil;
+}
+
+
 @end

@@ -13,7 +13,7 @@
 - (void)setShowImage:(UIImage *)showImage
 {
     self.image = showImage;
-    
+
     //计算 图片大小
     CGFloat imageWidth = self.image.size.width;
     CGFloat imageHeight = self.image.size.height;
