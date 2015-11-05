@@ -7,6 +7,7 @@
 //
 
 #import "RichTextUtility.h"
+#import "NSString+Trims.h"
 
 @implementation RichTextUtility
 
@@ -51,7 +52,7 @@
             NSRange matchRange = [result rangeAtIndex:i];
             if (matchRange.location == NSNotFound) continue;    //是否越界
             
-            NSString *match = [matchString substringWithRange:matchRange];
+            NSString *match = [[matchString substringWithRange:matchRange] trimmingWhitespaceAndNewlines];
             if ([RichTextUtility isNullValue:match]) continue;  //是否为空
             
             [matchResult addObject:match];
@@ -75,7 +76,8 @@
                                                        range:NSMakeRange(0, [matchString length])];
     
     if (result) {
-        return [matchString substringWithRange:[result range]];
+        NSString *match = [[matchString substringWithRange:[result range]] trimmingWhitespaceAndNewlines];
+        return match;
     }
     
     return nil;

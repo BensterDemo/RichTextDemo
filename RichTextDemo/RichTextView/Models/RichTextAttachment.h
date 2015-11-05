@@ -10,7 +10,7 @@
 
 @interface RichTextAttachment : NSTextAttachment
 
-@property (nonatomic, assign) NSString *imageFullName;      //图片全名 <img src = "http://file.31huiyi.com/image/template.png" />
+@property (nonatomic, strong) NSString *imageFullName;      //图片全名 <img src = "http://file.31huiyi.com/image/template.png" />
 
 @property (nonatomic, strong) NSString *imageName;          //图片名 template.png
 

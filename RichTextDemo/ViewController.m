@@ -14,6 +14,8 @@
 #import "UploadImageInfo.h"
 #import "DataResult.h"
 
+//<img src = \"\" />
+
 @interface ViewController ()
 
 @end
@@ -26,7 +28,7 @@
     _textView.layer.borderWidth = 1;
     _textView.layer.borderColor = [UIColor grayColor].CGColor;
     
-    NSString *string = @"<img src = \"coretext-image-1\" />\n美国导弹防御局网站公布，美国东部时间10月31日晚11时03分(北京时间11月1日中午11时03分)，美国海军在威克岛附近海域进行了一次反导试验，试验中验证了“宙斯盾”系统和THAAD系统互相配合，<img src = \"coretext-image-2\" />同时进行防空反导作战的能力。美《大众机械师》网站报道，网络照片显示，北京时间11月1日早晨7时前后，中国新疆库尔勒附近出现“异常天象”，据推断一次反导试验，测试的可能是红旗-19系统。<img src = \"http://cc.cocimg.com/api/uploads/20151102/1446445339151892.png \" />中美这两次反导试验的时间相差仅4小时，这或许是一次巧合。而2013年1月27日，中美也在同日进行了中段反导试验。\n 新疆库尔勒地区附近目击的异常天象\n<img src = \"coretext-image-3\" />";
+    NSString *string = @"<img src = \"coretext-image-1\" />\n美国导弹防御局网站公布，美国东部时间10月31日晚11时03分(北京时间11月1日中午11时03分)，美国海军在威克岛附近海域进行<img src = \"http://pic.6188.com/upload_6188s/flashAll/20120913/1347499424r8IvCH.jpg\" />了一次反导试验，试验中<img src = \"http://pic.6188.com/upload_6188s/flashAll/20120913/1347499435gxf8AV.jpg\" />验证了“宙斯盾”系统和<img src = \"http://pic.6188.com/upload_6188s/flashAll/20120913/1347499448fVU9cP.jpg\" />THAAD系统互相配合，<img src = \"coretext-image-2\" />同时进行防空反导作战的能力。美《大众机械师》网站报道，网络照片显示，北京时<img src = \"http://pic.6188.com/upload_6188s/flashAll/20120913/1347499464d5qJ95.jpg\" />间11月1日早晨7时前后，中国新疆库尔勒附近出现“异常天象”，据推断一次反导试验，测试的可能是红旗-19系统。<img src = \"http://pic.6188.com/upload_6188s/flashAll/20120913/1347499455c5qsya.jpg\" />中美这两次反导试验的时间相差仅4小时，这或许是一次巧合。而2013年1月27日，中美也在同日进行了中段反导试验。\n 新疆库尔勒地区附近目击的异常天象\n<img src = \"coretext-image-3\" />";
     
     _textView.attributedString = string;
 }
@@ -61,6 +63,7 @@
 #pragma mark - 上传
 - (IBAction)richTextSave:(UIButton *)sender
 {
+    NSLog(@"%@", _textView.attributedString);
     NSMutableArray *needUploadImages = [[NSMutableArray alloc] init];
     [_textView.needUpdloadAttachments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         RichTextAttachment *richTextAttachment = (RichTextAttachment *)obj;

@@ -7,8 +7,10 @@
 //
 
 #import "UITextView+RichTextView.h"
-#import "RichTextUtility.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
+#import <SDWebImage/SDWebImageDownloader.h>
+#import "RichTextUtility.h"
+#import "NSString+Trims.h"
 
 #define kImagePathRegx      @"<\\s*img\\s+[^>]*?src\\s*=\\s*[\'\"](.*?)[\'\"]\\s*(alt=[\'\"](.*?)[\'\"])?[^>]*?\\/?\\s*>"
 #define kImageNameRegx      @"[^/\\\\]+(\\.*?)$"
@@ -75,15 +77,7 @@
         
         imageAtt.showImage = [UIImage imageNamed:imageAtt.imagePath];
         if (!imageAtt.image) {
-            __weak typeof(self) weakSelf = self;
-            [[RACScheduler mainThreadScheduler] afterDelay:2 schedule:^{
-                __strong typeof(self) strongSelf = weakSelf;
-                imageAtt.image = [UIImage imageNamed:@"empty"];
-                
-                NSMutableAttributedString *parseAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:strongSelf.attributedText];
-                [parseAttributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
-                strongSelf.attributedText = parseAttributedString;
-            }];
+            imageAtt.image = [UIImage imageNamed:@"empty"];
         }
         
         [images addObject:imageAtt];
@@ -111,8 +105,11 @@
                                                                       withAttributedString:imageAttributedString];
                                        }
                                    }];
+    // 使用0xFFFC作为空白的占位符
+    unichar objectReplacementChar = 0xFFFC;
+    NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar length:1];
     
-    NSString *attString = parseAttributedString.string;
+    NSString *attString = [parseAttributedString.string stringByReplacingOccurrencesOfString:replaceString withString:@""];
     if (!attString || [attString isKindOfClass:[NSNull class]]) {
         return @"";
     }
@@ -145,6 +142,7 @@
     
     return result;
 }
+
 
 #pragma mark - Attributes Getter And Setter
 
@@ -190,12 +188,57 @@
 - (void)setAttributedString:(NSString *)attributedString
 {
     self.attributedText = [self parseStringToAttributedString:attributedString];
+    [self downImages];
 }
 
-#pragma mark -
+
+#pragma mark - UI
+
+#pragma mark - Refresh TextView
+- (void)reFresh
+{
+    __weak typeof(self) weakSelf = self;
+    [[RACScheduler mainThreadScheduler] schedule:^{
+        __strong typeof(self) strongSelf = weakSelf;
+        NSMutableAttributedString *parseAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:strongSelf.attributedText];
+        // 使用0xFFFC作为空白的占位符
+        unichar objectReplacementChar = 0xFFFC;
+        NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar length:1];
+        [parseAttributedString appendAttributedString:[[NSAttributedString alloc] initWithString:replaceString]];
+        strongSelf.attributedText = parseAttributedString;
+    }];
+}
+
+#pragma mark - 下载所有图片
+- (void)downImages
+{
+    for (RichTextAttachment *imageAtt in self.richTextAttachments) {
+        NSString *imagePath = [imageAtt.imagePath trimmingWhitespaceAndNewlines];
+        if ([RichTextUtility isNullValue:imagePath]) continue;
+        
+        NSURL *imageURL = [[NSURL alloc] initWithString:imagePath];
+        
+        __weak typeof(self) weakSelf = self;
+        SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
+        [downloader downloadImageWithURL:imageURL
+                                 options:0
+                                progress:nil
+                               completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                                   __strong typeof(self) strongSelf = weakSelf;
+                                   if (image && finished) {
+                                       imageAtt.showImage = image;
+                                       
+                                       [strongSelf reFresh];
+                                   }
+                               }];
+    }
+}
+
 #pragma mark - 插入图片
 - (void)insertImageToSelected:(UIImage *)image
 {
+    if (!image) return;
+    
     RichTextAttachment *imageAtt = [[RichTextAttachment alloc] init];
     
     int nowTime = [[NSDate date] timeIntervalSince1970];
