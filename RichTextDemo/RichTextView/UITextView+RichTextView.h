@@ -19,6 +19,11 @@
 @property (nonatomic, strong) NSString *attributedString;
 
 /**
+ *  文本样式
+ */
+@property (nonatomic, strong) NSDictionary *textAttributes;
+
+/**
  *  所有的图片（RichTextAttachment）
  */
 @property (nonatomic, readonly, strong) NSArray *richTextAttachments;

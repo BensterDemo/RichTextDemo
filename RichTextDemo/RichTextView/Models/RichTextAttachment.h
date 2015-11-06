@@ -16,6 +16,14 @@
 
 @property (nonatomic, strong) NSString *imagePath;          //图片路径 http://file.31huiyi.com/image/template.png
 
-@property (nonatomic, strong) UIImage *showImage;           //显示的图片，自适应（最大宽度为屏幕宽度 - 10）
+
+#pragma mark - Methods
+
+/**
+ *  自适应图片
+ *
+ *  @param maxWidth 图片最大宽度
+ */
+- (void)sizeThatFits:(CGFloat)maxWidth;
 
 @end

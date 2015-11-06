@@ -7,6 +7,7 @@
 //
 
 #import "UITextView+RichTextView.h"
+#import <objc/runtime.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <SDWebImage/SDWebImageDownloader.h>
 #import "RichTextUtility.h"
@@ -14,6 +15,10 @@
 
 #define kImagePathRegx      @"<\\s*img\\s+[^>]*?src\\s*=\\s*[\'\"](.*?)[\'\"]\\s*(alt=[\'\"](.*?)[\'\"])?[^>]*?\\/?\\s*>"
 #define kImageNameRegx      @"[^/\\\\]+(\\.*?)$"
+
+#define kTextAttributes     @"textAttributes"
+
+#define kImageMaxWidth      CGRectGetWidth(self.frame) - (self.textContainerInset.left + self.textContainerInset.right) - 10
 
 @implementation UITextView (RichTextView)
 
@@ -24,7 +29,7 @@
 {
     if ([RichTextUtility isNullValue:aRichTextString]) return nil;
     
-    NSDictionary *textAttributes = @{};
+    NSDictionary *textAttributes = self.textAttributes;
     NSMutableAttributedString *textAttributedString = [[NSMutableAttributedString alloc] initWithString:aRichTextString attributes:textAttributes];
     
     return textAttributedString;
@@ -47,7 +52,7 @@
     [matchs enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSMutableArray *matchResult = [[NSMutableArray alloc] initWithArray:obj];
         RichTextAttachment *imageAtt = [[RichTextAttachment alloc] init];
-
+        
         for (int i = 0; i < [matchResult count]; i ++) {
             NSString *result = [matchResult objectAtIndex:i];
             if ([RichTextUtility isNullValue:result]) continue;
@@ -59,10 +64,10 @@
                     break;
                 case 1: {
                     NSLog(@"case 1 = %@", result);
-
+                    
                     imageAtt.imagePath = result;
                     NSString *imageName = [RichTextUtility regexStringWtithMatchString:imageAtt.imagePath
-                                                                         regexString:kImageNameRegx];
+                                                                           regexString:kImageNameRegx];
                     NSLog(@"case 1:imageName = %@", imageName);
                     if (![RichTextUtility isNullValue:imageName]) {
                         imageAtt.imageName = imageName;
@@ -75,11 +80,12 @@
             }
         };
         
-        imageAtt.showImage = [UIImage imageNamed:imageAtt.imagePath];
+        imageAtt.image = [UIImage imageNamed:imageAtt.imagePath];
         if (!imageAtt.image) {
             imageAtt.image = [UIImage imageNamed:@"empty"];
         }
         
+        [imageAtt sizeThatFits:kImageMaxWidth];
         [images addObject:imageAtt];
     }];
     
@@ -191,6 +197,27 @@
     [self downImages];
 }
 
+#pragma mark - 
+- (NSDictionary *)textAttributes
+{
+    NSDictionary *textAttributes = objc_getAssociatedObject(self, kTextAttributes);
+    
+    return textAttributes;
+}
+
+#pragma mark - Setter textAttributes
+- (void)setTextAttributes:(NSDictionary *)textAttributes
+{
+    objc_setAssociatedObject(self,
+                             kTextAttributes,
+                             textAttributes,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:self.attributedText];
+    [attributedString addAttributes:textAttributes range:NSMakeRange(0, attributedString.length)];
+    self.attributedText = attributedString;
+}
+
 
 #pragma mark - UI
 
@@ -200,12 +227,12 @@
     __weak typeof(self) weakSelf = self;
     [[RACScheduler mainThreadScheduler] schedule:^{
         __strong typeof(self) strongSelf = weakSelf;
-        NSMutableAttributedString *parseAttributedString = [[NSMutableAttributedString alloc] initWithAttributedString:strongSelf.attributedText];
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:strongSelf.attributedText];
         // 使用0xFFFC作为空白的占位符
         unichar objectReplacementChar = 0xFFFC;
         NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar length:1];
-        [parseAttributedString appendAttributedString:[[NSAttributedString alloc] initWithString:replaceString]];
-        strongSelf.attributedText = parseAttributedString;
+        [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:replaceString]];
+        strongSelf.attributedText = attributedString;
     }];
 }
 
@@ -226,7 +253,8 @@
                                completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
                                    __strong typeof(self) strongSelf = weakSelf;
                                    if (image && finished) {
-                                       imageAtt.showImage = image;
+                                       imageAtt.image = image;
+                                       [imageAtt sizeThatFits:kImageMaxWidth];
                                        
                                        [strongSelf reFresh];
                                    }
@@ -246,7 +274,8 @@
     long randNum = (nowTime * 100)  + rand;
     
     imageAtt.imageName = [NSString stringWithFormat:@"%li", randNum];
-    imageAtt.showImage = image;
+    imageAtt.image = image;
+    [imageAtt sizeThatFits:kImageMaxWidth];
     
     NSAttributedString *imageAttributedString = [NSAttributedString attributedStringWithAttachment:imageAtt];
     
