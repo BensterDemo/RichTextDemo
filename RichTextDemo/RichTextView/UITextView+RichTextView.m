@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 #import <ReactiveCocoa/ReactiveCocoa.h>
 #import <SDWebImage/SDWebImageDownloader.h>
+#import <SDWebImage/SDImageCache.h>
 #import "RichTextUtility.h"
 #import "NSString+Trims.h"
 
@@ -18,7 +19,7 @@
 
 #define kTextAttributes     @"textAttributes"
 
-#define kImageMaxWidth      CGRectGetWidth(self.frame) - (self.textContainerInset.left + self.textContainerInset.right) - 10
+#define kImageMaxWidth      (CGRectGetWidth(self.frame) < ((CGRectGetWidth([UIScreen mainScreen].bounds)) - 10) ? CGRectGetWidth(self.frame) : (CGRectGetWidth([UIScreen mainScreen].bounds))) - (self.textContainerInset.left + self.textContainerInset.right) - 10
 
 @implementation UITextView (RichTextView)
 
@@ -27,6 +28,7 @@
 #pragma mark - 转换 文本
 - (NSAttributedString *)parseAttributedContentFromRichTextString:(NSString *)aRichTextString
 {
+    
     if ([RichTextUtility isNullValue:aRichTextString]) return nil;
     
     NSDictionary *textAttributes = self.textAttributes;
@@ -80,9 +82,10 @@
             }
         };
         
-        imageAtt.image = [UIImage imageNamed:imageAtt.imagePath];
+        imageAtt.image = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imageAtt.imageName];
         if (!imageAtt.image) {
-            imageAtt.image = [UIImage imageNamed:@"empty"];
+            imageAtt.image = [UIImage imageNamed:@"richTextView_empty"];
+            [self downImageWithImageAtt:imageAtt];
         }
         
         [imageAtt sizeThatFits:kImageMaxWidth];
@@ -90,6 +93,32 @@
     }];
     
     return images;
+}
+
+#pragma mark - 下载图片
+- (void)downImageWithImageAtt:(RichTextAttachment *)imageAtt
+{
+    NSString *imagePath = [imageAtt.imagePath trimmingWhitespaceAndNewlines];
+    if ([RichTextUtility isNullValue:imagePath]) return;
+    
+    NSURL *imageURL = [[NSURL alloc] initWithString:imagePath];
+    
+    __weak typeof(self) weakSelf = self;
+    SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
+    [downloader downloadImageWithURL:imageURL
+                             options:0
+                            progress:nil
+                           completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
+                               __strong typeof(self) strongSelf = weakSelf;
+                               if (image && finished) {
+                                   [[SDImageCache sharedImageCache] storeImage:image forKey:imageAtt.imageName toDisk:YES];
+                                   
+                                   imageAtt.image = image;
+                                   [imageAtt sizeThatFits:kImageMaxWidth];
+                                   
+                                   [strongSelf reFresh];
+                               }
+                           }];
 }
 
 #pragma mark - 把带有图片信息的NSAttributedString转换成String
@@ -194,10 +223,9 @@
 - (void)setAttributedString:(NSString *)attributedString
 {
     self.attributedText = [self parseStringToAttributedString:attributedString];
-    [self downImages];
 }
 
-#pragma mark - 
+#pragma mark -
 - (NSDictionary *)textAttributes
 {
     NSDictionary *textAttributes = objc_getAssociatedObject(self, kTextAttributes);
@@ -234,32 +262,6 @@
         [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:replaceString]];
         strongSelf.attributedText = attributedString;
     }];
-}
-
-#pragma mark - 下载所有图片
-- (void)downImages
-{
-    for (RichTextAttachment *imageAtt in self.richTextAttachments) {
-        NSString *imagePath = [imageAtt.imagePath trimmingWhitespaceAndNewlines];
-        if ([RichTextUtility isNullValue:imagePath]) continue;
-        
-        NSURL *imageURL = [[NSURL alloc] initWithString:imagePath];
-        
-        __weak typeof(self) weakSelf = self;
-        SDWebImageDownloader *downloader = [SDWebImageDownloader sharedDownloader];
-        [downloader downloadImageWithURL:imageURL
-                                 options:0
-                                progress:nil
-                               completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished) {
-                                   __strong typeof(self) strongSelf = weakSelf;
-                                   if (image && finished) {
-                                       imageAtt.image = image;
-                                       [imageAtt sizeThatFits:kImageMaxWidth];
-                                       
-                                       [strongSelf reFresh];
-                                   }
-                               }];
-    }
 }
 
 #pragma mark - 插入图片

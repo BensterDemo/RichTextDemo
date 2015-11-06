@@ -49,8 +49,8 @@
 		C1C35C4C1BA915F5000A4A06 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1C35C4A1BA915F5000A4A06 /* LaunchScreen.xib */; };
 		C1C35C581BA915F5000A4A06 /* RichTextDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C35C571BA915F5000A4A06 /* RichTextDemoTests.m */; };
 		C1C8FD991BEA156C003AAB85 /* UITextView+RichTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C8FD981BEA156C003AAB85 /* UITextView+RichTextView.m */; };
-		C1C8FDDA1BEB3A21003AAB85 /* empty@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1C8FDD91BEB3A21003AAB85 /* empty@2x.png */; };
 		C1C8FEF61BEB5352003AAB85 /* NSString+Trims.m in Sources */ = {isa = PBXBuildFile; fileRef = C1C8FEF51BEB5352003AAB85 /* NSString+Trims.m */; };
+		C1C8FEFB1BEC50BA003AAB85 /* richTextView_empty@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C1C8FEFA1BEC50BA003AAB85 /* richTextView_empty@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,9 +133,9 @@
 		C1C35C571BA915F5000A4A06 /* RichTextDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RichTextDemoTests.m; sourceTree = "<group>"; };
 		C1C8FD971BEA156C003AAB85 /* UITextView+RichTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+RichTextView.h"; sourceTree = "<group>"; };
 		C1C8FD981BEA156C003AAB85 /* UITextView+RichTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+RichTextView.m"; sourceTree = "<group>"; };
-		C1C8FDD91BEB3A21003AAB85 /* empty@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "empty@2x.png"; sourceTree = "<group>"; };
 		C1C8FEF41BEB5352003AAB85 /* NSString+Trims.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Trims.h"; sourceTree = "<group>"; };
 		C1C8FEF51BEB5352003AAB85 /* NSString+Trims.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Trims.m"; sourceTree = "<group>"; };
+		C1C8FEFA1BEC50BA003AAB85 /* richTextView_empty@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "richTextView_empty@2x.png"; sourceTree = "<group>"; };
 		C721ED87270B20A318669738 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -238,7 +238,6 @@
 		C16548B81BE8B10200AD11A7 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				C1C8FDD91BEB3A21003AAB85 /* empty@2x.png */,
 				C16548B91BE8B10200AD11A7 /* coretext-image-1.png */,
 				C16548BE1BE8B10200AD11A7 /* coretext-image-2.png */,
 				C16548BF1BE8B10200AD11A7 /* coretext-image-3.png */,
@@ -324,6 +323,7 @@
 		C1C35C911BA95202000A4A06 /* RichTextView */ = {
 			isa = PBXGroup;
 			children = (
+				C1C8FEF71BEC508F003AAB85 /* Resources */,
 				C1C35C961BA95202000A4A06 /* Models */,
 				C1C8FD971BEA156C003AAB85 /* UITextView+RichTextView.h */,
 				C1C8FD981BEA156C003AAB85 /* UITextView+RichTextView.m */,
@@ -340,6 +340,14 @@
 				C16548D41BE99B7900AD11A7 /* RichTextAttachment.m */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		C1C8FEF71BEC508F003AAB85 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C1C8FEFA1BEC50BA003AAB85 /* richTextView_empty@2x.png */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		ECBBF73429DA240BB9A1DB98 /* Frameworks */ = {
@@ -445,8 +453,8 @@
 				C16548C61BE8B10200AD11A7 /* coretext-image-1.png in Resources */,
 				C16548D21BE8B10200AD11A7 /* coretext-image-9.png in Resources */,
 				C16548C81BE8B10200AD11A7 /* coretext-image-11.png in Resources */,
-				C1C8FDDA1BEB3A21003AAB85 /* empty@2x.png in Resources */,
 				C16548CD1BE8B10200AD11A7 /* coretext-image-4.png in Resources */,
+				C1C8FEFB1BEC50BA003AAB85 /* richTextView_empty@2x.png in Resources */,
 				C16548CA1BE8B10200AD11A7 /* coretext-image-13.png in Resources */,
 				C16548CE1BE8B10200AD11A7 /* coretext-image-5.png in Resources */,
 			);
