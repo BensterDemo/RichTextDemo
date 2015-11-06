@@ -276,6 +276,7 @@
     long randNum = (nowTime * 100)  + rand;
     
     imageAtt.imageName = [NSString stringWithFormat:@"%li", randNum];
+    imageAtt.imageFullName = [NSString stringWithFormat:@"<img src = \"%@\" />", imageAtt.imageName];
     
     [[SDImageCache sharedImageCache] storeImage:image forKey:imageAtt.imageName toDisk:YES];
     imageAtt.image = image;
