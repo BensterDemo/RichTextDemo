@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#define kImagePathRegx      @"<\\s*img\\s+[^>]*?src\\s*=\\s*[\'\"](.*?)[\'\"]\\s*(alt=[\'\"](.*?)[\'\"])?[^>]*?\\/?\\s*>"
+#define kImageNameRegx      @"[^/\\\\]+(\\.*?)$"
+
 @interface RichTextUtility : NSObject
 
 /**

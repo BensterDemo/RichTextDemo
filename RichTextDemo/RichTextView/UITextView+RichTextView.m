@@ -14,9 +14,6 @@
 #import "RichTextUtility.h"
 #import "NSString+Trims.h"
 
-#define kImagePathRegx      @"<\\s*img\\s+[^>]*?src\\s*=\\s*[\'\"](.*?)[\'\"]\\s*(alt=[\'\"](.*?)[\'\"])?[^>]*?\\/?\\s*>"
-#define kImageNameRegx      @"[^/\\\\]+(\\.*?)$"
-
 #define kTextAttributes     @"textAttributes"
 
 #define kImageMaxWidth      (CGRectGetWidth(self.frame) < ((CGRectGetWidth([UIScreen mainScreen].bounds)) - 10) ? CGRectGetWidth(self.frame) : (CGRectGetWidth([UIScreen mainScreen].bounds))) - (self.textContainerInset.left + self.textContainerInset.right) - 10
@@ -132,7 +129,10 @@
                                    usingBlock:^(id value, NSRange range, BOOL *stop) {
                                        if (value && [value isKindOfClass:[RichTextAttachment class]]) {
                                            RichTextAttachment *richTextAtt = (RichTextAttachment *)value;
-                                           NSString *imageFullName = [NSString stringWithFormat:@"%@", richTextAtt.imageFullName];
+                                           NSString *imageFullName = richTextAtt.imageFullName;
+                                           if ([RichTextUtility isNullValue:imageFullName]) {
+                                               imageFullName = [NSString stringWithFormat:@"<img src = \"%@\" />", richTextAtt.imageName];
+                                           }
                                            
                                            NSAttributedString *imageAttributedString = [self parseAttributedContentFromRichTextString:imageFullName];
                                            
@@ -276,6 +276,8 @@
     long randNum = (nowTime * 100)  + rand;
     
     imageAtt.imageName = [NSString stringWithFormat:@"%li", randNum];
+    
+    [[SDImageCache sharedImageCache] storeImage:image forKey:imageAtt.imageName toDisk:YES];
     imageAtt.image = image;
     [imageAtt sizeThatFits:kImageMaxWidth];
     
