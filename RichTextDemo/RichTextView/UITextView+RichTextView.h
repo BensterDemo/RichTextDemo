@@ -28,6 +28,8 @@
  */
 @property (nonatomic, readonly, strong) NSArray *richTextAttachments;
 
+
+#pragma mark - Methods
 /**
  *  插入图片
  *
