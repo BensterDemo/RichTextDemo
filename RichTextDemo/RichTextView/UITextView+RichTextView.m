@@ -16,6 +16,8 @@
 
 #define kTextAttributes     @"textAttributes"
 
+#define kNonePlaceholder    0xFFFC
+
 #define kImageMaxWidth      (CGRectGetWidth(self.frame) < ((CGRectGetWidth([UIScreen mainScreen].bounds)) - 10) ? CGRectGetWidth(self.frame) : (CGRectGetWidth([UIScreen mainScreen].bounds))) - (self.textContainerInset.left + self.textContainerInset.right) - 10
 
 @implementation UITextView (RichTextView)
@@ -25,7 +27,6 @@
 #pragma mark - 转换 文本
 - (NSAttributedString *)parseAttributedContentFromRichTextString:(NSString *)aRichTextString
 {
-    
     if ([RichTextUtility isNullValue:aRichTextString]) return nil;
     
     NSDictionary *textAttributes = self.textAttributes;
@@ -140,8 +141,8 @@
                                                                       withAttributedString:imageAttributedString];
                                        }
                                    }];
-    // 使用0xFFFC作为空白的占位符
-    unichar objectReplacementChar = 0xFFFC;
+    //删除0xFFFC占位符
+    unichar objectReplacementChar = kNonePlaceholder;
     NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar length:1];
     
     NSString *attString = [parseAttributedString.string stringByReplacingOccurrencesOfString:replaceString withString:@""];
@@ -198,21 +199,6 @@
     return richTextAttachments;
 }
 
-#pragma mark - Getter 需要上传的图片（RichTextAttachment）
-- (NSArray *)needUpdloadAttachments
-{
-    NSMutableArray *needUploadTextAttachments = [[NSMutableArray alloc] init];
-    
-    [self.richTextAttachments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        RichTextAttachment *richTextAttachment = (RichTextAttachment *)obj;
-        if ([RichTextUtility isNullValue:richTextAttachment.imagePath]) {
-            [needUploadTextAttachments addObject:richTextAttachment];
-        }
-    }];
-    
-    return needUploadTextAttachments;
-}
-
 #pragma mark - Getter attributesString
 - (NSString *)attributedString
 {
@@ -257,7 +243,7 @@
         __strong typeof(self) strongSelf = weakSelf;
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithAttributedString:strongSelf.attributedText];
         // 使用0xFFFC作为空白的占位符
-        unichar objectReplacementChar = 0xFFFC;
+        unichar objectReplacementChar = kNonePlaceholder;
         NSString * replaceString = [NSString stringWithCharacters:&objectReplacementChar length:1];
         [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:replaceString]];
         strongSelf.attributedText = attributedString;

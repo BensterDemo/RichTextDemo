@@ -23,6 +23,15 @@
 + (BOOL)isNullValue:(NSString *)value;
 
 /**
+ *  判断图片路径是否是网络地址
+ *
+ *  @param imagePath <#imagePath description#>
+ *
+ *  @return <#return value description#>
+ */
++ (BOOL)isNetWorkAddreddWithImagePath:(NSString *)imagePath;
+
+/**
  *  正则出所有结果
  *
  *  @param matchString <#matchString description#>

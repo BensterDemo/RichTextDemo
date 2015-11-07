@@ -31,6 +31,18 @@
     return NO;
 }
 
+#pragma mark - 判断图片路径是否是网络地址
++ (BOOL)isNetWorkAddreddWithImagePath:(NSString *)imagePath
+{
+    if ([RichTextUtility isNullValue:imagePath]) {
+        return YES;
+    } else if ([[imagePath lowercaseString] rangeOfString:@"http://"].location != NSNotFound) {
+        return YES;
+    }
+    
+    return NO;
+}
+
 #pragma mark - 正则出所有结果
 + (NSArray *)regexArrayWtithMatchString:(NSString *)matchString
                             regexString:(NSString *)regexString

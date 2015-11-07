@@ -29,11 +29,6 @@
 @property (nonatomic, readonly, strong) NSArray *richTextAttachments;
 
 /**
- *  需要上传的图片（RichTextAttachment）
- */
-@property (nonatomic, readonly, strong) NSArray *needUpdloadAttachments;
-
-/**
  *  插入图片
  *
  *  @param image <#image description#>
